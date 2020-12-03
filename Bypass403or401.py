@@ -18,14 +18,14 @@ class BurpExtender(IBurpExtender, IScannerCheck):
         self._helpers = callbacks.getHelpers()
 
         # set our extension name
-        callbacks.setExtensionName("403 Directory Bypasser")
+        callbacks.setExtensionName("403 or 401 Directory Bypasser")
         self.stdout = PrintWriter(callbacks.getStdout(), True)
         self.stderr = PrintWriter(callbacks.getStderr(), True)
 
         # register ourselves as a custom scanner check
-        print("403 Directory Bypasser is loading ")
+        print("403 or 401 Directory Bypasser is loading ")
         print("Author: summersec")
-        print("https://github.com/SummerSec/BurpSuite_403Bypasser")
+        print("https://github.com/SummerSec/Bypass403or401/")
         callbacks.registerScannerCheck(self)
 
     # helper method to search a response for occurrences of a literal match string
@@ -137,7 +137,7 @@ class BurpExtender(IBurpExtender, IScannerCheck):
             baseRequestResponse.getHttpService(),
             self._helpers.analyzeRequest(baseRequestResponse).getUrl(),
             [self._callbacks.applyMarkers(baseRequestResponse, None, None)],
-            "403 Bypass Vuln by summersec",
+            "403 or 401 Bypass Vuln by summersec",
             '<br>'.join(results),
             "High")]
         
