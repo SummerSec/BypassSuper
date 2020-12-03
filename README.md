@@ -16,6 +16,12 @@ https://twitter.com/h4x0r_dz/status/1317218511937261570
 
 https://github.com/KathanP19/HowToHunt/blob/master/WAF_Bypasses/WAF_Bypass_Using_headers.md
 
+
+
+## GitHub
+
+项目地址：https://github.com/SummerSec/Bypass403or401
+
 ---
 
 
