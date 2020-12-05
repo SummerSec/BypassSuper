@@ -1,0 +1,26 @@
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): www.baidu.com:443
+DEBUG:http.client:send: b'GET / HTTP/1.1\r\nHost: www.baidu.com\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n'
+DEBUG:http.client:reply: 'HTTP/1.1 200 OK\r\n'
+DEBUG:http.client:header: Bdpagetype: 1
+DEBUG:http.client:header: Bdqid: 0xc8498b8b000c21e9
+DEBUG:http.client:header: Cache-Control: private
+DEBUG:http.client:header: Connection: keep-alive
+DEBUG:http.client:header: Content-Encoding: gzip
+DEBUG:http.client:header: Content-Type: text/html;charset=utf-8
+DEBUG:http.client:header: Date: Sat, 05 Dec 2020 15:58:24 GMT
+DEBUG:http.client:header: Expires: Sat, 05 Dec 2020 15:58:24 GMT
+DEBUG:http.client:header: P3p: CP=" OTI DSP COR IVA OUR IND COM "
+DEBUG:http.client:header: P3p: CP=" OTI DSP COR IVA OUR IND COM "
+DEBUG:http.client:header: Server: BWS/1.1
+DEBUG:http.client:header: Set-Cookie: BAIDUID=089B4B58C7B716942588CAEDC7C96638:FG=1; expires=Thu, 31-Dec-37 23:55:55 GMT; max-age=2147483647; path=/; domain=.baidu.com
+DEBUG:http.client:header: Set-Cookie: BIDUPSID=089B4B58C7B716942588CAEDC7C96638; expires=Thu, 31-Dec-37 23:55:55 GMT; max-age=2147483647; path=/; domain=.baidu.com
+DEBUG:http.client:header: Set-Cookie: PSTM=1607183904; expires=Thu, 31-Dec-37 23:55:55 GMT; max-age=2147483647; path=/; domain=.baidu.com
+DEBUG:http.client:header: Set-Cookie: BAIDUID=089B4B58C7B71694423FC124917E7055:FG=1; max-age=31536000; expires=Sun, 05-Dec-21 15:58:24 GMT; domain=.baidu.com; path=/; version=1; comment=bd
+DEBUG:http.client:header: Set-Cookie: BDSVRTM=14; path=/
+DEBUG:http.client:header: Set-Cookie: BD_HOME=1; path=/
+DEBUG:http.client:header: Set-Cookie: H_PS_PSSID=1439_33061_31660_33098_33101_32845_33199_33144; path=/; domain=.baidu.com
+DEBUG:http.client:header: Strict-Transport-Security: max-age=172800
+DEBUG:http.client:header: Traceid: 1607183904076457396214432219910002975209
+DEBUG:http.client:header: X-Ua-Compatible: IE=Edge,chrome=1
+DEBUG:http.client:header: Transfer-Encoding: chunked
+DEBUG:urllib3.connectionpool:https://www.baidu.com:443 "GET / HTTP/1.1" 200 None

