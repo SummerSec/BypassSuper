@@ -29,9 +29,11 @@ filename =  str("./result/" +
 logname = str("./log/" +
     str(times.tm_year) + str(times.tm_mon) + str(times.tm_mday) + str(times.tm_hour) + str(times.tm_min) + str(
         times.tm_sec) + "-log.log")
+
 # 全局处理
 # 保存扫描日志
 # 日志处理
+
 httpclient_logger = logging.getLogger("http.client")
 logging.basicConfig(level=logging.DEBUG,  # 控制台打印的日志级别
                             filename=logname,
@@ -80,8 +82,8 @@ class MyThread(threading.Thread):
 
 
 class BypassSuper:
-    def __init__(self):
-        print(time.asctime() + " Init BypassSuper!")
+    # def __init__(self):
+    #     print(time.asctime() + " Init BypassSuper!")
 
 
 
