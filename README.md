@@ -2,12 +2,13 @@
 <h3 align="center" >一款针对403/401页面进行快速、高效尝试Bypass的扫描工具</h3>
  <p align="center">
     <a href="https://github.com/SummerSec/BypassSuper"><img alt="BypassSuper" src="https://img.shields.io/badge/python-3.X-blueviolet"></a>
-    <a href="https://github.com/SummerSec/BypassSuper"><img alt="BypassSuper" src="https://img.shields.io/github/stars/SummerSec/BypassSuper.svg"></a>
     <a href="https://github.com/SummerSec/BypassSuper"><img alt="BypassSuper" src="https://img.shields.io/badge/Bypass-Super-green"></a>
-    <a href="https://github.com/SummerSec/BypassSuper"><img alt="BypassSuper" src="https://img.shields.io/badge/build-success-brightgreen"></a>
-     <a href="https://github.com/SummerSec/BypassSuper"><img alt="BypassSuper" src="https://img.shields.io/github/release/SummerSec/BypassSuper.svg"></a>
-     <a href="https://github.com/SummerSec"><img alt="Follower" src="https://img.shields.io/github/followers/SummerSec.svg"></a>
+    <a href="https://github.com/SummerSec/BypassSuper"><img alt="Forks" src="https://img.shields.io/github/forks/SummerSec/BypassSuper"></a>
+     <a href="https://github.com/SummerSec/BypassSuper"><img alt="Release" src="https://img.shields.io/github/release/SummerSec/BypassSuper.svg"></a>
+  <a href="https://github.com/SummerSec/BypassSuper"><img alt="Stars" src="https://img.shields.io/github/stars/SummerSec/BypassSuper.svg?style=social&label=Stars"></a>
+     <a href="https://github.com/SummerSec"><img alt="Follower" src="https://img.shields.io/github/followers/SummerSec.svg?style=social&label=Follow"></a>
 	<a href="https://twitter.com/SecSummers"><img alt="SecSummers" src="https://img.shields.io/twitter/follow/SecSummers.svg"></a>
+
 
 
 
@@ -65,9 +66,13 @@ https://github.com/KathanP19/HowToHunt/blob/master/WAF_Bypasses/WAF_Bypass_Using
 
 ## :zap: Installation
 
+
+
 `BurpSuite -> Extender -> Extensions -> Add -> Extension Type: Python -> Select file: BypassSuper-Burp.py -> Next till Fininsh`
 
 
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20201206225513435.png)
 
 ---
 
@@ -77,7 +82,9 @@ https://github.com/KathanP19/HowToHunt/blob/master/WAF_Bypasses/WAF_Bypass_Using
 
 ## :clapper:Screenshot
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20201203214306848.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20201206225652523.png)
+
+
 
 ## :book: References
 * [https://twitter.com/iam_j0ker/status/1324354024657711106?s=20](https://twitter.com/iam_j0ker/status/1324354024657711106?s=20)

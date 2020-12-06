@@ -65,22 +65,23 @@ class MyThread(threading.Thread):
     def __init__(self, queue):
         threading.Thread.__init__(self)
         self.q = queue
-        self.thread_stop = False
+        # self.thread_stop = False
 
     # start()方法启动线程将自动调用 run()方法
     def run(self):  # 线程执行体
         # 从队列取出数据，每次一条，多个线程同时取，直到取空
         # print(str(self.q.empty()) + " self.q.empty()")
-        while not self.thread_stop:
+        while not self.q.empty():
             url = self.q.get()
             try:
                 # print("self.q.get(): " + url)
+                # print(self.thread_stop)
                 BypassSuper().Req(url)
             except Exception as e:
                 print(e)
-                self.thread_stop = True
+                # self.thread_stop = True
             finally:
-                break
+                pass
 
 
 class BypassSuper:
@@ -381,7 +382,7 @@ class BypassSuper:
         for url in urls:
             cout = cout + 1
             u = url.strip("\r\n").strip()
-            print(u)
+            print(time.asctime() + " Reading The URLs: " + u)
             self.urlQueue.put(u)
         print(time.asctime() + " The file is read, there are " + str(cout) + " URLs in total")
         if cout >= nums:
