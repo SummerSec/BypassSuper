@@ -16,19 +16,20 @@ from queue import Queue
 import requests
 import urllib3
 
-
 # 关闭警告
 urllib3.disable_warnings()
 
 times = time.localtime()
 # 保存结果文件名 -f/--file的时候用到
-filename =  str("./result/" +
-    str(times.tm_year) + str(times.tm_mon) + str(times.tm_mday) + str(times.tm_hour) + str(times.tm_min) + str(
-        times.tm_sec) + "-result.csv")
+filename = str("./result/" +
+               str(times.tm_year) + str(times.tm_mon) + str(times.tm_mday) + str(times.tm_hour) + str(
+    times.tm_min) + str(
+    times.tm_sec) + "-result.csv")
 # 保存日志文件名
 logname = str("./log/" +
-    str(times.tm_year) + str(times.tm_mon) + str(times.tm_mday) + str(times.tm_hour) + str(times.tm_min) + str(
-        times.tm_sec) + "-log.log")
+              str(times.tm_year) + str(times.tm_mon) + str(times.tm_mday) + str(times.tm_hour) + str(
+    times.tm_min) + str(
+    times.tm_sec) + "-log.log")
 
 # 全局处理
 # 保存扫描日志
@@ -36,13 +37,13 @@ logname = str("./log/" +
 
 httpclient_logger = logging.getLogger("http.client")
 logging.basicConfig(level=logging.DEBUG,  # 控制台打印的日志级别
-                            filename=logname,
-                            filemode='w'  ##模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志
-                            # a是追加模式，默认如果不写的话，就是追加模式
-                            # format=
-                            # '%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s'
-                            # # 日志格式
-                            )
+                    filename=logname,
+                    filemode='w'  ##模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志
+                    # a是追加模式，默认如果不写的话，就是追加模式
+                    # format=
+                    # '%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s'
+                    # # 日志格式
+                    )
 
 
 def httpclient_logging_patch(httpclient_logger, level=logging.DEBUG):
@@ -57,6 +58,7 @@ def httpclient_logging_patch(httpclient_logger, level=logging.DEBUG):
     http.client.print = httpclient_log
     # enable debugging
     http.client.HTTPConnection.debuglevel = 1
+
 
 # 继承式多线程
 class MyThread(threading.Thread):
@@ -84,8 +86,6 @@ class MyThread(threading.Thread):
 class BypassSuper:
     # def __init__(self):
     #     print(time.asctime() + " Init BypassSuper!")
-
-
 
     def result(self):
         # filename = file + "-result.csv"
@@ -130,15 +130,11 @@ class BypassSuper:
             if 500 < req.status_code < 400:
                 print(time.asctime() + " The URL of status_code is " + str(req.status_code))
                 pass
-
-
-
         except Exception as e:
             print(time.asctime() + " something is error!")
             print(time.asctime() + " Exception: " + str(e))
         finally:
             pass
-
 
     # 保存扫描结果
     def SaveResult(self, Preurl, lasturl, respone, payload):
@@ -157,9 +153,6 @@ class BypassSuper:
         Upath = result[1]
         UHost = result[2]
         PreviousPath = result[4]
-
-
-
 
         payloads = ["%2e" + LastPath,
                     "%2e/" + LastPath,
@@ -361,10 +354,6 @@ class BypassSuper:
         finally:
             pass
 
-
-
-
-
     # url解析
     def UrlParse(self, url):
         url = url  # 整个URL
@@ -394,13 +383,13 @@ class BypassSuper:
             u = url.strip("\r\n").strip()
             print(u)
             self.urlQueue.put(u)
-        print(time.asctime() + " The file is read, there are " + str(cout) +" URLs in total")
+        print(time.asctime() + " The file is read, there are " + str(cout) + " URLs in total")
         if cout >= nums:
             self.Threads(nums=nums)
         else:
-            print(time.asctime() + " Targets must >= threads ! Targets is " + str(cout) + " And Threads is " + str(nums))
+            print(
+                time.asctime() + " Targets must >= threads ! Targets is " + str(cout) + " And Threads is " + str(nums))
             sys.exit(0)
-
 
     # 多线程并发请求
     def Threads(self, nums):
@@ -408,7 +397,6 @@ class BypassSuper:
         for i in range(nums):
             t = MyThread(self.urlQueue)
             t.start()
-
 
     def main(self):
         print("""
@@ -427,8 +415,8 @@ class BypassSuper:
         """)
         parse = optparse.OptionParser()
         parse.add_option('-u', '--url', dest='url', help='Please Enter the Target Site! http://www.baidu.com')
-        parse.add_option('-t', '--threads', dest='threads', type=int, default=5,
-                         help='Please Enter the Threading Nums! Threads Default is 5!')
+        parse.add_option('-t', '--threads', dest='threads', type=int, default=20,
+                         help='Please Enter the Threading Nums! Threads Default is 20!')
         parse.add_option('-f', '--file', dest='file', type=str, help='Targets From File! Targets must >= threads !')
         (options, args) = parse.parse_args()
 
