@@ -116,20 +116,21 @@ class BypassSuper:
             pass
 
         try:
-            if 400 <= req.status_code < 404:
+            if 400 <= req.status_code <= 404:
                 # print(time.asctime() + " The URL of status_code is " + str(req.status_code))
                 print(time.asctime() + " The Scanner is running! ")
                 httpclient_logging_patch(httpclient_logger)
-                req2 = requests.request(method="POST", url=url, timeout=5, verify=False, allow_redirects=False, headers={
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
+                req2 = requests.request(method="POST", url=url, timeout=5, verify=False, allow_redirects=False,
+                                        headers={
+                                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
 
-                })
+                                        })
                 if req2.status_code == 200:
                     # print(req)
                     print(time.asctime() + " " + url + "has the vuls! payload : get to post !")
                     self.SaveResult(Preurl=url, lasturl="post", respone=req2.text, payload="get to post")
                 self.Scan(url)
-            if 400 > req.status_code >= 404:
+            if 400 > req.status_code > 404:
                 print(time.asctime() + " The URL of status_code is " + str(req.status_code))
                 pass
         except Exception as e:
@@ -259,6 +260,7 @@ class BypassSuper:
             for p in payloads:
                 # print(p)
                 self.ScanOne(url, UHost, PreviousPath=PreviousPath, payload=p)
+            self.ScanOne(url=url, UHost=UHost, PreviousPath="", payload="/" + url)
             print(time.asctime() + " The second scanning method is running!")
             for hp in hpayloads1:
                 self.ScanTwo(url=url, payload1=hp, payload2=payload1)
@@ -291,9 +293,27 @@ class BypassSuper:
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
 
             })
+            req2 = requests.post(url=lastU, verify=False, allow_redirects=False, timeout=5, headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
+
+            })
+
             if req.status_code == 200:
                 print(time.asctime() + " " + url + " has the vuls! payload : " + payload)
-                self.SaveResult(Preurl=url, lasturl=lastU, respone=req.text, payload=payload)
+                self.SaveResult(Preurl=url, lasturl=lastU, respone=req.text, payload="post:" + payload)
+            elif req.status_code == 302:
+                print(time.asctime() + " " + url + " has the vuls! payload : " + payload)
+                self.SaveResult(Preurl=url, lasturl=lastU, respone=req.text, payload="post:" + payload)
+
+            else:
+                print(time.asctime() + " " + url + " donot have the vuls! payload : " + payload)
+            if req2.status_code == 200:
+                print(time.asctime() + " " + url + " has the vuls! payload : " + payload)
+                self.SaveResult(Preurl=url, lasturl=lastU, respone=req2.text, payload="post:" + payload)
+            elif req2.status_code == 302:
+                print(time.asctime() + " " + url + " has the vuls! payload : " + payload)
+                self.SaveResult(Preurl=url, lasturl=lastU, respone=req2.text, payload="post:" + payload)
+
             else:
                 print(time.asctime() + " " + url + " donot have the vuls! payload : " + payload)
         except Exception as e:
@@ -344,9 +364,25 @@ class BypassSuper:
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
 
             })
+            req2 = requests.post(url=host, verify=False, allow_redirects=False, timeout=5, headers={
+                payload1: payload2,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
+
+            })
             if req.status_code == 200:
                 print(time.asctime() + " " + url + " has the vuls! payload : " + payload)
                 self.SaveResult(Preurl=url, lasturl=host, respone=req.text, payload=payload)
+            elif req.status_code == 302:
+                print(time.asctime() + " " + url + " has the vuls! payload : " + payload)
+                self.SaveResult(Preurl=url, lasturl=host, respone=req.text, payload=payload)
+            else:
+                print(time.asctime() + " " + url + " donot have the vuls! payload : " + payload)
+            if req2.status_code == 200:
+                print(time.asctime() + " " + url + " has the vuls! payload : " + payload)
+                self.SaveResult(Preurl=url, lasturl=host, respone=req2.text, payload="post:" + payload)
+            elif req2.status_code == 302:
+                print(time.asctime() + " " + url + " has the vuls! payload : " + payload)
+                self.SaveResult(Preurl=url, lasturl=host, respone=req2.text, payload="post:" + payload)
             else:
                 print(time.asctime() + " " + url + " donot have the vuls! payload : " + payload)
         except Exception as e:
