@@ -104,7 +104,7 @@ class BypassSuper:
         try:
             print(time.asctime() + " Determining the URL: " + url + " status code! ")
             httpclient_logging_patch(httpclient_logger)
-            req = requests.request(method="GET", url=url, timeout=5, verify=False, headers={
+            req = requests.request(method="GET", url=url, timeout=5, allow_redirects=False, verify=False, headers={
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
 
             })
@@ -120,7 +120,7 @@ class BypassSuper:
                 # print(time.asctime() + " The URL of status_code is " + str(req.status_code))
                 print(time.asctime() + " The Scanner is running! ")
                 httpclient_logging_patch(httpclient_logger)
-                req2 = requests.request(method="POST", url=url, timeout=5, verify=False, headers={
+                req2 = requests.request(method="POST", url=url, timeout=5, verify=False, allow_redirects=False, headers={
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
 
                 })
@@ -287,7 +287,7 @@ class BypassSuper:
         print(time.asctime() + " Scanning: " + url + " with the payload (" + payload + ")")
         try:
             httpclient_logging_patch(httpclient_logger)
-            req = requests.get(url=lastU, verify=False, timeout=5, headers={
+            req = requests.get(url=lastU, verify=False, allow_redirects=False, timeout=5, headers={
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
 
             })
@@ -312,7 +312,7 @@ class BypassSuper:
         print(time.asctime() + " Scanning: " + url + " with the payload (" + payload + ")")
         try:
             httpclient_logging_patch(httpclient_logger)
-            req = requests.get(url=url, verify=False, timeout=5, headers={
+            req = requests.get(url=url, verify=False, allow_redirects=False, timeout=5, headers={
                 payload1: payload2,
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
 
@@ -339,7 +339,7 @@ class BypassSuper:
         print(time.asctime() + " Scanning: " + url + " with the payload (" + payload + ")")
         try:
             httpclient_logging_patch(httpclient_logger)
-            req = requests.get(url=host, verify=False, timeout=5, headers={
+            req = requests.get(url=host, verify=False, allow_redirects=False, timeout=5, headers={
                 payload1: payload2,
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
 
