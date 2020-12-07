@@ -92,7 +92,8 @@ class BypassSuper:
         # filename = file + "-result.csv"
         # logname = file + "-log.log"
         # print(filename)
-        with open(mode="a+", file=self.filename, encoding="utf-8", newline="") as file:
+        # filename = self.filename
+        with open(mode="a+", file=filename, encoding="utf-8", newline="") as file:
             f_csv = csv.writer(file)
             f_csv.writerow(['PreURL', "lastURL", "respone", "payload"])
             file.close()
@@ -128,7 +129,7 @@ class BypassSuper:
                     print(time.asctime() + " " + url + "has the vuls! payload : get to post !")
                     self.SaveResult(Preurl=url, lasturl="post", respone=req2.text, payload="get to post")
                 self.Scan(url)
-            if 500 < req.status_code < 400:
+            if 400 > req.status_code >= 404:
                 print(time.asctime() + " The URL of status_code is " + str(req.status_code))
                 pass
         except Exception as e:
@@ -139,6 +140,7 @@ class BypassSuper:
 
     # 保存扫描结果
     def SaveResult(self, Preurl, lasturl, respone, payload):
+        # print(self.filename)
         with open(mode="a+", file=filename, encoding="utf-8", newline="") as file:
             f_csv = csv.writer(file)
             f_csv.writerow([Preurl, lasturl, respone, payload])
@@ -426,8 +428,8 @@ class BypassSuper:
             sys.exit(0)
         elif options.url != None:
             url = options.url
-            file = self.UrlParse(url=url)
-            self.filename = "./result/" + file[6] + "-result.csv"
+            self.UrlParse(url=url)
+
             self.result()
             self.Req(url)
 
@@ -435,7 +437,6 @@ class BypassSuper:
         elif options.file != None:
             file = options.file
             t = options.threads
-            self.filename = filename
             self.result()
             self.URLS(file=file, nums=t)
 

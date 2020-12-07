@@ -34,8 +34,9 @@ class BurpExtender(IBurpExtender, IScannerCheck):
 
     def _get_matches(self, sttcode):
         #response = self._helpers.bytesToString(response)
-        if 400 <= sttcode < 404:
-            return True
+        if 400 <= sttcode:
+            if sttcode < 404:
+                return True
         return False
 
     def rplHeader(self, headerStr, headerName, newHeader):
