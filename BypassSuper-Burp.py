@@ -34,7 +34,7 @@ class BurpExtender(IBurpExtender, IScannerCheck):
 
     def _get_matches(self, sttcode):
         #response = self._helpers.bytesToString(response)
-        if 400 <= sttcode <= 500:
+        if 400 <= sttcode < 404:
             return True
         return False
 

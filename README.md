@@ -1,5 +1,5 @@
 <h1 align="center" >BypassSuper</h1>
-<h3 align="center" >一款针对403/401页面进行快速、高效尝试Bypass的扫描工具</h3>
+<h3 align="center" >一款针对403/401/404快速、高效尝试Bypass的扫描工具</h3>
  <p align="center">
     <a href="https://github.com/SummerSec/BypassSuper"><img alt="BypassSuper" src="https://img.shields.io/badge/python-3.X-blueviolet"></a>
     <a href="https://github.com/SummerSec/BypassSuper"><img alt="BypassSuper" src="https://img.shields.io/badge/Bypass-Super-green"></a>
@@ -78,13 +78,15 @@ https://github.com/KathanP19/HowToHunt/blob/master/WAF_Bypasses/WAF_Bypass_Using
 
 ## :clap: 参数介绍
 
-
+---
 
 ## :clapper:Screenshot
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20201206225652523.png)
 
 
+
+---
 
 ## :book: References
 * [https://twitter.com/iam_j0ker/status/1324354024657711106?s=20](https://twitter.com/iam_j0ker/status/1324354024657711106?s=20)

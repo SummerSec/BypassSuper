@@ -115,7 +115,7 @@ class BypassSuper:
             pass
 
         try:
-            if 400 <= req.status_code <= 500:
+            if 400 <= req.status_code < 404:
                 # print(time.asctime() + " The URL of status_code is " + str(req.status_code))
                 print(time.asctime() + " The Scanner is running! ")
                 httpclient_logging_patch(httpclient_logger)
