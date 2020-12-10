@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: UTF-8 -*-
-
+import jsinfo
 
 __author__ = "summersec"
 
@@ -483,3 +483,4 @@ class BypassSuper:
 
 if __name__ == '__main__':
     BypassSuper().main()
+    
