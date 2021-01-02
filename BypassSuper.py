@@ -158,7 +158,8 @@ class BypassSuper:
         UHost = result[2]
         PreviousPath = result[4]
 
-        payloads = ["#"+LastPath,"%2e" + LastPath,
+        payloads = ["%3b"+LastPath,";/","%3b/"+LastPath,";"+LastPath,
+                    "#"+LastPath,"%2e" + LastPath,
                     "%2e/" + LastPath,
                     LastPath + "/.",
                     "./" + LastPath + "/./",

