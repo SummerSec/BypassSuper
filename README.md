@@ -136,3 +136,7 @@
 
 
 
+---
+
+ [![Stargazers over time](https://starchart.cc/SummerSec/BypassSuper.svg)](https://starchart.cc/SummerSec/BypassSuper) 
+
