@@ -140,3 +140,5 @@
 
  [![Stargazers over time](https://starchart.cc/SummerSec/BypassSuper.svg)](https://starchart.cc/SummerSec/BypassSuper) 
 
+<img align='right' src="https://profile-counter.glitch.me/summersec/count.svg" width="200">
+
