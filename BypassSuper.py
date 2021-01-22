@@ -261,7 +261,7 @@ class BypassSuper:
             for p in payloads:
                 # print(p)
                 self.ScanOne(url, UHost, PreviousPath=PreviousPath, payload=p)
-            self.ScanOne(url=url, UHost=UHost, PreviousPath="", payload="/" + url)
+            self.ScanOne(url=url, Uhost=UHost, PreviousPath="", payload="/" + url)
             print(time.asctime() + " The second scanning method is running!")
             for hp in hpayloads1:
                 self.ScanTwo(url=url, payload1=hp, payload2=payload1)

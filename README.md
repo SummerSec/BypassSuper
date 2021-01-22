@@ -95,6 +95,16 @@
 
 
 
+----
+
+##  :clapper:实际案例
+&emsp;&emsp; 靶场案例[URL-based access control can be circumvented](https://portswigger.net/web-security/access-control/lab-url-based-access-control-can-be-circumvented)，这个是portswigger官方给的实际案例。~~悄咪咪说一句，上面给的截屏是一个真实SRC案例！~~
+实用burp插件效果
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210122195343459.png)
+
+使用BypassSuper脚本效果
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210122201042177.png)
+
 ---
 
 ## :memo: TODO
